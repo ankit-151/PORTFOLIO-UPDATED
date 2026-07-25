@@ -75,6 +75,22 @@ function App() {
     );
   }
 
+  const handleAdminClick = (e) => {
+    const envAdminUrl = import.meta.env.VITE_ADMIN_URL;
+    if (envAdminUrl) {
+      window.open(envAdminUrl, '_blank', 'noopener,noreferrer');
+      return;
+    }
+
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      window.open('http://localhost:5174', '_blank', 'noopener,noreferrer');
+      return;
+    }
+
+    e.preventDefault();
+    alert('Admin URL is not configured for production yet.\n\nPlease set VITE_ADMIN_URL in your Vercel Environment Variables to your deployed Admin Panel URL.');
+  };
+
   return (
     <>
       {usingMock && (
@@ -108,8 +124,7 @@ function App() {
       {/* Floating Admin Trigger */}
       <a
         href={import.meta.env.VITE_ADMIN_URL || 'http://localhost:5174'}
-        target="_blank"
-        rel="noopener noreferrer"
+        onClick={handleAdminClick}
         className="admin-floating-trigger"
         title="Open Admin Panel"
       >
