@@ -8,15 +8,46 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
     const token = localStorage.getItem('admin_token');
+
+    const timer = setTimeout(() => {
+      if (isMounted) {
+        setLoading(false);
+      }
+    }, 4000);
+
     if (token) {
       verifyToken()
-        .then(res => { setAdmin(res.data.admin); })
-        .catch(() => { localStorage.removeItem('admin_token'); })
-        .finally(() => setLoading(false));
+        .then(res => {
+          if (!isMounted) return;
+          clearTimeout(timer);
+          if (res.data && res.data.admin) {
+            setAdmin(res.data.admin);
+          } else {
+            localStorage.removeItem('admin_token');
+          }
+        })
+        .catch(() => {
+          if (!isMounted) return;
+          clearTimeout(timer);
+          localStorage.removeItem('admin_token');
+        })
+        .finally(() => {
+          if (isMounted) {
+            clearTimeout(timer);
+            setLoading(false);
+          }
+        });
     } else {
+      clearTimeout(timer);
       setLoading(false);
     }
+
+    return () => {
+      isMounted = false;
+      clearTimeout(timer);
+    };
   }, []);
 
   const loginUser = (token, adminData) => {
