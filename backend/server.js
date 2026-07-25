@@ -1,4 +1,5 @@
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -26,7 +27,7 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Serve uploaded files
-app.use('/uploads', express.static('uploads'));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
@@ -61,6 +62,10 @@ app.use((err, req, res, next) => {
 // MongoDB Atlas connection
 const connectDB = async () => {
   try {
+    if (!process.env.MONGODB_URI) {
+      console.warn('⚠️ MONGODB_URI is missing in environment variables');
+      return;
+    }
     await mongoose.connect(process.env.MONGODB_URI, {
       serverSelectionTimeoutMS: 10000,
       socketTimeoutMS: 45000,
@@ -78,13 +83,12 @@ const connectDB = async () => {
     }
   } catch (err) {
     console.error('❌ MongoDB connection failed:', err.message);
-    process.exit(1);
   }
 };
 
-connectDB().then(() => {
-  const PORT = process.env.PORT || 5000;
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`🚀 Server running on port ${PORT}`);
-  });
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+  connectDB();
 });
+

@@ -62,10 +62,11 @@ function SkillCard({ skill, index }) {
 
 export default function Skills({ skills = [] }) {
   const [active, setActive] = useState('all');
+  const safeSkills = skills || [];
 
   const filtered = active === 'all'
-    ? skills
-    : skills.filter(s => s.category === active);
+    ? safeSkills
+    : safeSkills.filter(s => s && s.category === active);
 
   return (
     <section id="skills" className="section skills">

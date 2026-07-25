@@ -64,8 +64,9 @@ function ProjectCard({ project, index }) {
 }
 
 export default function Projects({ projects = [] }) {
-  const featured = projects.filter(p => p.featured);
-  const display = featured.length > 0 ? featured : projects;
+  const safeProjects = projects || [];
+  const featured = safeProjects.filter(p => p && p.featured);
+  const display = featured.length > 0 ? featured : safeProjects;
 
   return (
     <section id="projects" className="section projects">

@@ -24,17 +24,44 @@ function App() {
   }, [theme]);
 
   useEffect(() => {
+    let isMounted = true;
+
+    // Safety timeout: if API call takes more than 4 seconds, fallback to MOCK_DATA
+    const fallbackTimer = setTimeout(() => {
+      if (isMounted) {
+        console.warn('Backend response timed out, falling back to static data.');
+        setData(MOCK_DATA);
+        setUsingMock(true);
+        setLoading(false);
+      }
+    }, 4000);
+
     getPortfolioData()
       .then(res => {
-        setData(res.data.data);
+        if (!isMounted) return;
+        clearTimeout(fallbackTimer);
+        if (res.data && res.data.success && res.data.data && res.data.data.profile) {
+          setData(res.data.data);
+        } else {
+          console.warn('Invalid or incomplete API response, falling back to static data.');
+          setData(MOCK_DATA);
+          setUsingMock(true);
+        }
         setLoading(false);
       })
-      .catch(() => {
-        // Backend not available — use static CV data
+      .catch(err => {
+        if (!isMounted) return;
+        clearTimeout(fallbackTimer);
+        console.warn('Backend unavailable, using static fallback:', err?.message || err);
         setData(MOCK_DATA);
         setUsingMock(true);
         setLoading(false);
       });
+
+    return () => {
+      isMounted = false;
+      clearTimeout(fallbackTimer);
+    };
   }, []);
 
   const toggleTheme = () => setTheme(t => t === 'light' ? 'dark' : 'light');

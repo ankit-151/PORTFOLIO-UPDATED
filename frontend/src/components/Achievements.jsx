@@ -6,11 +6,11 @@ const ICONS = {
   trophy: '🏆', star: '⭐', users: '👥', heart: '❤️', default: '🎯'
 };
 
-function CountUp({ target, duration = 2000 }) {
+function CountUp({ target = '', duration = 2000 }) {
   const [count, setCount] = useState(0);
-  const numStr = target.replace(/[^0-9]/g, '');
+  const numStr = (target || '').replace(/[^0-9]/g, '');
   const num = parseInt(numStr) || 0;
-  const suffix = target.replace(/[0-9]/g, '');
+  const suffix = (target || '').replace(/[0-9]/g, '');
 
   useEffect(() => {
     let start = 0;
@@ -58,8 +58,9 @@ function AchievementStat({ achievement, index }) {
 }
 
 export default function Achievements({ achievements = [] }) {
-  const stats = achievements.filter(a => a.is_stat !== false);
-  const highlights = achievements.filter(a => a.is_stat === false);
+  const safeList = achievements || [];
+  const stats = safeList.filter(a => a && a.is_stat !== false);
+  const highlights = safeList.filter(a => a && a.is_stat === false);
 
   return (
     <section id="achievements" className="section achievements">

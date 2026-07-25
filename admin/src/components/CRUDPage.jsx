@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FiPlus, FiEdit2, FiTrash2, FiX } from 'react-icons/fi';
 import { Toast, useToast, ConfirmModal } from './Toast';
 
@@ -18,7 +18,7 @@ export default function CRUDPage({ title, subtitle, api, columns, FormComponent,
     }).catch(() => setLoading(false));
   };
 
-  useState(() => { load(); }, []);
+  useEffect(() => { load(); }, []);
 
   const handleSave = async data => {
     try {

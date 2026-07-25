@@ -67,7 +67,7 @@ export default function Sidebar({ active, setActive }) {
 
       <div className="sidebar-footer">
         <a
-          href="http://localhost:5173"
+          href={import.meta.env.VITE_FRONTEND_URL || 'http://localhost:5173'}
           target="_blank"
           rel="noreferrer"
           className="nav-item"
