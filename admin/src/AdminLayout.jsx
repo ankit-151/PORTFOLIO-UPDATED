@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { FiMenu, FiX } from 'react-icons/fi';
 import Sidebar from './components/Sidebar';
 import Dashboard from './pages/Dashboard';
 import PhotoEditor from './pages/PhotoEditor';
@@ -42,14 +43,32 @@ const PAGES = {
 
 export default function AdminLayout() {
   const [active, setActive] = useState('dashboard');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const PageComponent = PAGES[active] || Dashboard;
+
+  const handleSelect = (key) => {
+    setActive(key);
+    setSidebarOpen(false);
+  };
 
   return (
     <div className="admin-layout">
-      <Sidebar active={active} setActive={setActive} />
+      {sidebarOpen && (
+        <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)} />
+      )}
+      <Sidebar active={active} setActive={handleSelect} open={sidebarOpen} setOpen={setSidebarOpen} />
       <div className="admin-main">
         <div className="admin-topbar">
-          <h1 className="admin-topbar-title">{PAGE_TITLES[active]}</h1>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <button
+              className="mobile-menu-btn"
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              title="Toggle Menu"
+            >
+              {sidebarOpen ? <FiX size={22} /> : <FiMenu size={22} />}
+            </button>
+            <h1 className="admin-topbar-title">{PAGE_TITLES[active]}</h1>
+          </div>
           <div className="admin-topbar-right">
             <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>
               Portfolio Admin v1.0
@@ -63,3 +82,4 @@ export default function AdminLayout() {
     </div>
   );
 }
+

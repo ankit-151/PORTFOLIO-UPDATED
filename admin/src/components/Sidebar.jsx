@@ -34,16 +34,16 @@ const NAV_SECTIONS = [
   }
 ];
 
-export default function Sidebar({ active, setActive }) {
+export default function Sidebar({ active, setActive, open }) {
   const { admin, logout } = useAuth();
 
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar ${open ? 'open' : ''}`}>
       <div className="sidebar-header">
         <div className="sidebar-logo">AP</div>
-        <div>
+        <div style={{ overflow: 'hidden' }}>
           <div className="sidebar-title">Portfolio Admin</div>
-          <div className="sidebar-subtitle">{admin?.email}</div>
+          <div className="sidebar-subtitle" style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>{admin?.email}</div>
         </div>
       </div>
 
