@@ -1,0 +1,21 @@
+{
+  "name": "ankit---portfolio",
+  "version": "1.0.0",
+  "description": "A pixel-perfect portfolio website for **Ankit**, built with React, Node.js, Express, and MongoDB.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently --kill-others-on-fail --names \"API,FRONTEND,ADMIN\" --prefix-colors \"bgBlue.bold,bgGreen.bold,bgMagenta.bold\" \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\" \"npm run dev --prefix admin\"",
+    "start:backend": "npm run dev --prefix backend",
+    "start:frontend": "npm run dev --prefix frontend",
+    "start:admin": "npm run dev --prefix admin",
+    "seed": "npm run seed --prefix backend",
+    "install:all": "npm install --prefix backend && npm install --prefix frontend && npm install --prefix admin"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "concurrently": "^10.0.3"
+  }
+}
